@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Novos FC</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --brand:#16a34a; /* verde */
+      --brand-strong:#059669;
+      --card:#f8fafc;
+      --ring:rgba(20,184,166,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.4;
+    }
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px 16px 56px;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .logo{
+      width:72px;height:72px;flex:0 0 72px;
+      border-radius:50%;
+      background:linear-gradient(145deg,#111,#bbb);
+      display:grid;place-items:center; color:#fff; font-weight:800; position:relative;
+    }
+    .logo::after{content:"N"; font-size:34px;}
+    .brand{
+      font-size:48px; font-weight:800; letter-spacing:.5px;
+    }
+    .sub{color:var(--muted); font-size:14px; margin-top:2px}
+
+    .stage{
+      display:grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items:center;
+      gap:24px;
+      margin-top:40px;
+    }
+    @media (max-width: 820px){
+      .brand{font-size:36px}
+      .stage{grid-template-columns: 1fr; gap:20px}
+    }
+
+    .buy{
+      justify-self:center;
+      padding:18px 28px;
+      font-size:28px;
+      font-weight:900;
+      text-transform:lowercase;
+      border:none; border-radius:14px;
+      background:#22c55e; /* tom vibrante de verde como na imagem */
+      color:white; box-shadow: 0 10px 20px rgba(34,197,94,.35);
+      cursor:pointer; transition: transform .08s ease, box-shadow .2s ease, filter .2s ease;
+    }
+    .buy:active{transform:translateY(1px)}
+    .buy:hover{filter:saturate(1.1)}
+
+    .frame{
+      justify-self:end;
+      width:210px; height:210px;
+      border:10px solid #111;
+      border-radius:12px;
+      display:grid; place-items:center; background:#fff;
+    }
+    .product-img{width:80%; height:auto; opacity:.95}
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed; inset:0; background:rgba(0,0,0,.45);
+      display:none; place-items:center; padding:16px; z-index:50;
+    }
+    .modal{
+      width:min(520px, 100%);
+      background:var(--card);
+      border-radius:16px;
+      box-shadow:0 20px 50px rgba(0,0,0,.35);
+      padding:18px;
+      border:1px solid rgba(0,0,0,.08);
+      animation:pop .14s ease-out;
+    }
+    @keyframes pop{from{transform:scale(.98); opacity:.6} to{transform:scale(1); opacity:1}}
+    .modal h3{margin:4px 0 12px; font-size:20px}
+    .row{display:grid; gap:10px; margin-bottom:10px}
+    label{font-size:13px; color:var(--muted)}
+    input, select{
+      width:100%; padding:12px 14px; border-radius:12px; border:1px solid #d1d5db; background:white; outline:none;
+    }
+    input:focus, select:focus{box-shadow:0 0 0 4px var(--ring); border-color:#22d3ee}
+    .actions{display:flex; gap:10px; justify-content:flex-end; margin-top:12px}
+    .btn{padding:12px 16px; border-radius:12px; border:1px solid #d1d5db; background:#fff; cursor:pointer}
+    .btn.primary{background:var(--brand); color:#fff; border-color:transparent}
+    .btn.primary:hover{background:var(--brand-strong)}
+    .close-x{position:absolute; right:14px; top:10px; font-size:20px; cursor:pointer; user-select:none}
+
+    .notice{margin-top:18px; font-size:12px; color:var(--muted)}
+    .success{
+      display:none; text-align:center; padding:22px 8px; font-size:18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <div class="brand">Novos fc</div>
+        <div class="sub">Loja oficial (layout exemplo)</div>
+      </div>
+    </header>
+
+    <section class="stage">
+      <div></div>
+      <button id="btnComprar" class="buy" aria-label="Comprar agora">comprar</button>
+      <div class="frame" aria-label="Imagem do produto">
+        <!-- Troque o src abaixo pela imagem do seu produto -->
+        <img class="product-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/WilsonSolution.jpg/240px-WilsonSolution.jpg" alt="Produto"/>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal de compra (simples) -->
+  <div id="backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="titulo-modal">
+    <div class="modal">
+      <div class="close-x" id="closeModal" title="Fechar">×</div>
+      <h3 id="titulo-modal">Finalizar compra</h3>
+
+      <div class="row">
+        <label for="nome">Nome completo</label>
+        <input id="nome" type="text" placeholder="Ex.: Vinícius Oliveira" />
+      </div>
+      <div class="row" style="grid-template-columns:1fr 120px;">
+        <div>
+          <label for="email">E-mail</label>
+          <input id="email" type="email" placeholder="voce@email.com" />
+        </div>
+        <div>
+          <label for="qtd">Qtd.</label>
+          <input id="qtd" type="number" value="1" min="1" />
+        </div>
+      </div>
+      <div class="row">
+        <label for="pagamento">Forma de pagamento</label>
+        <select id="pagamento">
+          <option value="pix">Pix (simulação)</option>
+          <option value="cartao">Cartão (simulação)</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="cancelar">Cancelar</button>
+        <button class="btn primary" id="pagar">Concluir compra</button>
+      </div>
+      <div class="notice">⚠️ Este é um fluxo de demonstração (sem cobrança real). Ao concluir, você será redirecionado para o link configurado.</div>
+      <div id="success" class="success">Pagamento aprovado! Redirecionando…</div>
+    </div>
+  </div>
+
+  <script>
+    // ========= CONFIG =========
+    // Altere para o link final após a compra (ex.: página do WhatsApp, Google Forms, ou agradecimento):
+    const SUCCESS_REDIRECT = "https://youtube.com/@vinii444?si=-jXZjh2UPV6gbQw1"; // <-- troque aqui
+
+    // ========= LÓGICA =========
+    const $ = (s)=>document.querySelector(s);
+    const backdrop = $('#backdrop');
+    const btnComprar = $('#btnComprar');
+    const closeModal = $('#closeModal');
+    const cancelar = $('#cancelar');
+    const pagar = $('#pagar');
+    const success = $('#success');
+
+    const openModal = () => {backdrop.style.display = 'grid'; success.style.display='none'};
+    const close = () => {backdrop.style.display = 'none'};
+
+    btnComprar.addEventListener('click', openModal);
+    closeModal.addEventListener('click', close);
+    cancelar.addEventListener('click', close);
+
+    pagar.addEventListener('click', () => {
+      // Validação simples
+      const nome = $('#nome').value.trim();
+      const email = $('#email').value.trim();
+      const qtd = parseInt($('#qtd').value || '1', 10);
+      if(!nome || !email || qtd < 1){
+        alert('Preencha nome, e-mail e quantidade válida.');
+        return;
+      }
+      // "Processando" pagamento (simulado)
+      pagar.disabled = true;
+      pagar.textContent = 'Processando…';
+      success.style.display='block';
+
+      setTimeout(()=>{
+        // Redireciona quando a compra "aprovar"
+        window.location.href = SUCCESS_REDIRECT;
+      }, 1200);
+    });
+
+    // Fecha ao clicar fora do card
+    backdrop.addEventListener('click', (e)=>{
+      if(e.target === backdrop) close();
+    });
+  </script>
+</body>
+</html>
